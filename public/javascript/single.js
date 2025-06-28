@@ -7,6 +7,7 @@ $(document).ready(function(){
         // e.preventDefault()
         var  name = $('input').val();
         var id = $('form').attr('data-id');
+        
         fetch('/image/'+id, {
             method: 'put',
             headers: {'Content-Type': 'application/json'},
