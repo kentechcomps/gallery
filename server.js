@@ -7,44 +7,43 @@ const path = require('path');
 let index = require('./routes/index');
 let image = require('./routes/image');
 
-// connecting the database
-
+// Connect to the database
 const config = require('./_config');
-
 const mongoURI = config.mongoURI.production;
 
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
   if (err) console.log(err);
 });
 
-
-// test if the database has connected successfully
 let db = mongoose.connection;
-db.once('open', ()=>{
-    console.log('Database connected successfully')
-})
+db.once('open', () => {
+  console.log('Database connected successfully');
+});
 
-// Initializing the app
+// Initialize the app
 const app = express();
-
 
 // View Engine
 app.set('view engine', 'ejs');
 
-// Set up the public folder;
+// Set up the public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// body parser middleware
-app.use(express.json())
+// Body parser middleware
+app.use(express.json());
 
-
+// Routes
 app.use('/', index);
 app.use('/image', image);
 
+// ✅ GitHub Webhook Route
+app.post('/github-webhook/', (req, res) => {
+  console.log('✅ GitHub webhook received:', req.body);
+  res.sendStatus(200);
+});
 
-
- 
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT,() =>{
-    console.log(`Server is listening at http://localhost:${PORT}`)
+app.listen(PORT, () => {
+  console.log(`Server is listening at http://localhost:${PORT}`);
 });
