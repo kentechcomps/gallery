@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
+const http = require('http');
 
 // Define routes
 let index = require('./routes/index');
@@ -42,9 +43,9 @@ app.post('/github-webhook/', (req, res) => {
   const options = {
     hostname: 'localhost',
     port: 8080,
-    path: '/job/YOUR_JOB_NAME/build', // Replace with your real Jenkins job name
+    path: '/job/Code Challenge/build', // Replace with your real Jenkins job name
     method: 'POST',
-    auth: 'your-jenkins-username:your-api-token', // Replace with real credentials
+    auth: 'kenchez:11b4b11f3f27f0dfa89e28836c431e5a3a', // Replace with real credentials
     headers: {
       'Content-Type': 'application/json'
     }
