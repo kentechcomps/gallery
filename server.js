@@ -45,7 +45,7 @@ app.post('/github-webhook/', (req, res) => {
     port: 8080,
     path: '/job/Code Challenge/build', // Replace with your real Jenkins job name
     method: 'POST',
-    auth: 'kenchez:11b4b11f3f27f0dfa89e28836c431e5a3a', // Replace with real credentials
+    auth: 'kenchez:11ce09086b6f562872bef403c18f980541', // Replace with real credentials
     headers: {
       'Content-Type': 'application/json'
     }
