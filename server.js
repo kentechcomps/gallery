@@ -2,7 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
-const http = require('http');
 
 // Define routes
 let index = require('./routes/index');
@@ -37,31 +36,10 @@ app.use(express.json());
 app.use('/', index);
 app.use('/image', image);
 
+// ✅ GitHub Webhook Route
 app.post('/github-webhook/', (req, res) => {
   console.log('✅ GitHub webhook received:', req.body);
-
-  const options = {
-    hostname: 'localhost',
-    port: 8080,
-    path: '/job/Code Challenge/build', // Replace with your real Jenkins job name
-    method: 'POST',
-    auth: 'kenchez:11ce09086b6f562872bef403c18f980541', // Replace with real credentials
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  };
-
-  const jenkinsReq = http.request(options, (jenkinsRes) => {
-    console.log(`🚀 Jenkins responded with status: ${jenkinsRes.statusCode}`);
-    res.sendStatus(200);
-  });
-
-  jenkinsReq.on('error', (err) => {
-    console.error('❌ Error triggering Jenkins:', err.message);
-    res.sendStatus(500);
-  });
-
-  jenkinsReq.end(); // Don’t forget to send the request
+  res.sendStatus(200);
 });
 
 // Start server
@@ -69,3 +47,4 @@ const PORT = process.env.PORT || 5050;
 app.listen(PORT, () => {
   console.log(`Server is listening at http://localhost:${PORT}`);
 });
+
