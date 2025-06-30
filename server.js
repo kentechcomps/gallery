@@ -32,14 +32,35 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Body parser middleware
 app.use(express.json());
 
-// Routes
+// Routesa
 app.use('/', index);
 app.use('/image', image);
 
-// ✅ GitHub Webhook Route
 app.post('/github-webhook/', (req, res) => {
   console.log('✅ GitHub webhook received:', req.body);
-  res.sendStatus(200);
+
+  const options = {
+    hostname: 'localhost',
+    port: 8080,
+    path: '/job/YOUR_JOB_NAME/build', // Replace with your real Jenkins job name
+    method: 'POST',
+    auth: 'your-jenkins-username:your-api-token', // Replace with real credentials
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  const jenkinsReq = http.request(options, (jenkinsRes) => {
+    console.log(`🚀 Jenkins responded with status: ${jenkinsRes.statusCode}`);
+    res.sendStatus(200);
+  });
+
+  jenkinsReq.on('error', (err) => {
+    console.error('❌ Error triggering Jenkins:', err.message);
+    res.sendStatus(500);
+  });
+
+  jenkinsReq.end(); // Don’t forget to send the request
 });
 
 // Start server
