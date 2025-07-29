@@ -53,6 +53,37 @@ pipeline {
             }
         }
 
+    post {
+        always {
+            echo 'Pipeline completed'
+        }
+        success {
+            echo 'Sending Slack success notification...'
+            slackSend(
+                channel: env.SLACK_CHANNEL,
+                color: 'good',
+                message: "Build ${env.BUILD_NUMBER} of ${env.APP_NAME} v${env.VERSION_NUMBER} successfully deployed to ${env.RENDER_URL}"
+            )
+            echo 'Build succeeded'
+        }
+        failure {
+            echo 'Sending email notification for failure...'
+            emailext(
+                attachLog: true,
+                subject: "Build #${env.BUILD_NUMBER} Failed: ${env.APP_NAME} v${env.VERSION_NUMBER}",
+                body: """
+                    <p><b>Job Failure: ${env.JOB_NAME} #${env.BUILD_NUMBER}</b></p>
+                    <p>Project: ${env.APP_NAME} v${env.VERSION_NUMBER}</p>
+                    <p>Test execution failed. Check the test results in the attached log.</p>
+                    <p>View console output: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    <p>Deployed site (if applicable): <a href="${env.RENDER_URL}">${env.RENDER_URL}</a></p>
+                    <p><i>Build log is attached.</i></p>
+                """,
+                to: 'mutukukennedy34@gmail.com'
+            )
+            echo 'Build failed'
+        }
+    }
 
    
   }
